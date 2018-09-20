@@ -1,0 +1,8 @@
+version: 0.2
+phases:
+  build:
+    commands:
+      - ./gradlew bootJar
+artifacts:
+  files:
+    - build/libs/bpm-skills-api-0.0.1.jar
