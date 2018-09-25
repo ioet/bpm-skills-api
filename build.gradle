@@ -28,6 +28,10 @@ repositories {
     mavenCentral()
 }
 
+ext {
+    springCloudVersion = 'Finchley.SR1'
+}
+
 dependencies {
     compile 'com.github.derjust:spring-data-dynamodb:5.0.3'
     compile('org.springframework.boot:spring-boot-starter-web')
@@ -36,6 +40,13 @@ dependencies {
     testCompile('org.springframework.boot:spring-boot-starter-test')
     compile 'io.springfox:springfox-swagger2:2.7.0'
     compile 'io.springfox:springfox-swagger-ui:2.7.0'
+    compile('org.springframework.cloud:spring-cloud-starter-netflix-eureka-client')
+}
+
+dependencyManagement {
+    imports {
+        mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+    }
 }
 
 docker {
