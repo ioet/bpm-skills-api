@@ -5,7 +5,7 @@
 Swagger is integrated and available in this URL:
 
 ```
-http://IP_ADDRESS:PORT/swagger-ui.html
+http://IP_ADDRESS:8082/swagger-ui.html
 ```
 
 ## Docker
