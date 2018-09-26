@@ -51,7 +51,9 @@ public class SkillController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Skill> updateSkill(@PathVariable(value = "id") String skillId, @Valid @RequestBody Skill skillDetails) {
+    public ResponseEntity<Skill> updateSkill(@PathVariable(value = "id") String skillId,
+                                             @Valid @RequestBody Skill skillDetails) {
+
         Optional<Skill> skillOptional = skillRepository.findById(skillId);
         if (!skillOptional.isPresent()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
