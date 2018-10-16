@@ -24,7 +24,7 @@ public class SkillControllerTest {
     @Test
     public void skillsAreListedUsingTheRepository() throws Exception {
 
-        ResponseEntity<Iterable> skills =  skillController.findSkills();
+        ResponseEntity<Iterable> skills =  skillController.getAllSkills();
 
         Assert.assertEquals(HttpStatus.OK, skills.getStatusCode());
         Mockito.verify(skillRepository, Mockito.times(1)).findAll();
@@ -36,7 +36,7 @@ public class SkillControllerTest {
         Skill skillCreated= Mockito.mock(Skill.class);
         Mockito.when(skillRepository.save(skillToCreate)).thenReturn(skillCreated);
 
-        ResponseEntity<Skill> skillCreatedResponse =  skillController.create(skillToCreate);
+        ResponseEntity<Skill> skillCreatedResponse =  skillController.createSkill(skillToCreate);
 
         Assert.assertEquals(skillCreated, skillCreatedResponse.getBody());
         Assert.assertEquals(HttpStatus.CREATED, skillCreatedResponse.getStatusCode());
