@@ -1,7 +1,9 @@
 package com.ioet.bpm.skills.boundaries;
 
 import com.ioet.bpm.skills.domain.Skill;
+import com.ioet.bpm.skills.domain.exception.EntityNotFoundException;
 import com.ioet.bpm.skills.repositories.SkillRepository;
+import com.ioet.bpm.skills.service.SkillService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,9 +16,11 @@ import java.util.Optional;
 public class SkillController {
 
     private final SkillRepository skillRepository;
+    private final SkillService skillService;
 
-    public SkillController(SkillRepository skillRepository) {
+    public SkillController(SkillRepository skillRepository, SkillService skillService) {
         this.skillRepository = skillRepository;
+        this.skillService = skillService;
     }
 
     @GetMapping
@@ -53,16 +57,11 @@ public class SkillController {
     @PutMapping("/{id}")
     public ResponseEntity<Skill> updateSkill(@PathVariable(value = "id") String skillId,
                                              @Valid @RequestBody Skill skillDetails) {
-
-        Optional<Skill> skillOptional = skillRepository.findById(skillId);
-        if (!skillOptional.isPresent()) {
+        try{
+            return new ResponseEntity<>(skillService.save(skillId,skillDetails),  HttpStatus.OK);
+        }
+        catch (EntityNotFoundException ex){
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-
-        Skill skill = skillOptional.get();
-        skill.setName(skillDetails.getName());
-        skill.setDescription(skillDetails.getDescription());
-        skillRepository.save(skill);
-        return new ResponseEntity<>(skill, HttpStatus.OK);
     }
 }
