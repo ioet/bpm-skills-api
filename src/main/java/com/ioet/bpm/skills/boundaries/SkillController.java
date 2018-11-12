@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -31,6 +32,12 @@ public class SkillController {
         return skillOptional.map(
                 skill -> new ResponseEntity<>(skill, HttpStatus.OK))
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    }
+
+    @GetMapping("/search/{name}")
+    public ResponseEntity<List>getName(@PathVariable(value = "name") String skillName){
+        List<Skill> skillOptional = skillRepository.findByNameContaining(skillName);
+        return  new ResponseEntity<>(skillOptional,HttpStatus.OK);
     }
 
     @PostMapping
