@@ -34,10 +34,10 @@ public class SkillController {
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
-    @GetMapping("/search/{name}")
-    public ResponseEntity<List>getName(@PathVariable(value = "name") String skillName){
-        List<Skill> skillOptional = skillRepository.findByNameContaining(skillName);
-        return  new ResponseEntity<>(skillOptional,HttpStatus.OK);
+    @GetMapping("/")
+    public ResponseEntity<List>getName(String skillName){
+        List<Skill> skillWithNameCoincidences = skillRepository.findByNameContaining(skillName);
+        return  new ResponseEntity<>(skillWithNameCoincidences,HttpStatus.OK);
     }
 
     @PostMapping
