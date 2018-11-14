@@ -14,4 +14,6 @@ public class Category {
     Double businessValue;
     @NotBlank
     Double predictiveValue;
+    @NotBlank
+    String Id;
 }
