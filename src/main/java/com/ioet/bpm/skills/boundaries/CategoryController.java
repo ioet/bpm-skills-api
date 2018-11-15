@@ -22,9 +22,9 @@ public class CategoryController {
         this.categoryRepository = categoryRepository;
     }
 
-    @ApiOperation(value = "Return a list of all categorys", response = Category.class, responseContainer = "List")
+    @ApiOperation(value = "Return a list of all categories", response = Category.class, responseContainer = "List")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Categorys successfully returned")
+            @ApiResponse(code = 200, message = "Categories successfully returned")
     })
     @GetMapping(produces = "application/json")
     public ResponseEntity<Iterable> getAllCategories() {
@@ -48,7 +48,8 @@ public class CategoryController {
     @ApiResponses(value = {
             @ApiResponse(code = 201, message = "Category successfully created")
     })
-    @PostMapping(produces = "application/json")    public ResponseEntity<Category> createCategory(@RequestBody Category category) {
+    @PostMapping(produces = "application/json")
+    public ResponseEntity<Category> createCategory(@RequestBody Category category) {
         Category categoryCreated = categoryRepository.save(category);
         return new ResponseEntity<>(categoryCreated, HttpStatus.CREATED);
     }
