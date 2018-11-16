@@ -59,7 +59,7 @@ public class SkillController {
             Skill skillSaved = skillRepository.save(skillDetails);
             return new ResponseEntity<>(skillSaved, HttpStatus.OK);
         }
-        
-        return new ResponseEntity<>("Skill with id " + skillId + " not updated.", HttpStatus.NOT_FOUND);
+
+        return new ResponseEntity<>("Skill with id " + skillId + " does not exist.", HttpStatus.NOT_FOUND);
     }
 }

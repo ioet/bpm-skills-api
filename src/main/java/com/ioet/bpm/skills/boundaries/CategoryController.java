@@ -63,12 +63,12 @@ public class CategoryController {
     @DeleteMapping(path = "/{id}", produces = "application/json")
     public ResponseEntity<?> deleteCategory(@PathVariable(value = "id") String categoryId) {
         Optional<Category> category = categoryRepository.findById(categoryId);
-        if (!category.isPresent()) {
+        if (category.isPresent()) {
+            categoryRepository.delete(category.get());
+            return new ResponseEntity<>(HttpStatus.OK);
+        }  else  {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-
-        categoryRepository.delete(category.get());
-        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @ApiOperation(value = "Update a category", response = Category.class)
