@@ -22,7 +22,7 @@ public class CategoryConverter implements DynamoDBTypeConverter<String, Category
             String categoryAsString = null;
             try {
                 if (category != null) {
-                    categoryAsString = String.format("%s || %.1f || %.1f", category.getName(), category.getBusinessValue(),
+                    categoryAsString = String.format("%s || %s || %.1f || %.1f", category.getId(), category.getName(), category.getBusinessValue(),
                             category.getPredictiveValue());
                 }
             } catch (Exception e) {
@@ -36,10 +36,11 @@ public class CategoryConverter implements DynamoDBTypeConverter<String, Category
             try {
                 if (categoryAsString != null && categoryAsString.length() != 0) {
                     String[] data = categoryAsString.split("\\|\\|");
-                    String name = data[0].trim();
-                    Double businessValue= Double.valueOf(data[1].trim());
-                    Double predictiveValue=Double.valueOf(data[2].trim());
-                    category = new Category(name,businessValue,predictiveValue);
+                    String id = data[0].trim();
+                    String name = data[1].trim();
+                    Double businessValue= Double.valueOf(data[2].trim());
+                    Double predictiveValue=Double.valueOf(data[3].trim());
+                    category = new Category(id, name, businessValue, predictiveValue);
                 }
             } catch (Exception e) {
                 throw new ConverterException(categoryAsString, e);
