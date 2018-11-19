@@ -34,7 +34,7 @@ public class SkillController {
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
-    @GetMapping("/")
+    @RequestMapping(value = "", method = RequestMethod.GET,params = "skillName")
     public ResponseEntity<List>getName(String skillName){
         List<Skill> skillWithNameCoincidences = skillRepository.findByNameContaining(skillName);
         return  new ResponseEntity<>(skillWithNameCoincidences,HttpStatus.OK);
