@@ -1,7 +1,6 @@
 package com.ioet.bpm.skills.domain;
 
 import com.amazonaws.services.dynamodbv2.datamodeling.*;
-import com.ioet.bpm.skills.domain.converters.CategoryConverter;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -24,13 +23,11 @@ public class Skill {
     private String label;
 
     @DynamoDBAttribute
-    Double businessValue;
+    private Double businessValue;
 
     @DynamoDBAttribute
-    Double predictiveValue;
+    private Double predictiveValue;
 
-    @DynamoDBTypeConverted(converter = CategoryConverter.class)
     @DynamoDBAttribute
-    Category category;
+    private String categoryId;
 }
-
