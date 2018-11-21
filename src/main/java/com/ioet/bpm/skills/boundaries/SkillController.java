@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -44,11 +45,13 @@ public class SkillController {
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
-    @ApiOperation(value = "Create a new skill", response = Skill.class)
-    @ApiResponses(value = {
-            @ApiResponse(code = 201, message = "Skill successfully created")
-    })
-    @PostMapping(produces = "application/json")
+    @RequestMapping(value = "", method = RequestMethod.GET,params = "skillName")
+    public ResponseEntity<List>getName(String skillName){
+        List<Skill> skillWithNameCoincidences = skillRepository.findByNameContaining(skillName);
+        return  new ResponseEntity<>(skillWithNameCoincidences,HttpStatus.OK);
+    }
+
+    @PostMapping
     public ResponseEntity<Skill> createSkill(@RequestBody Skill skill) {
         Skill skillCreated = skillRepository.save(skill);
         return new ResponseEntity<>(skillCreated, HttpStatus.CREATED);
@@ -92,3 +95,4 @@ public class SkillController {
         return new ResponseEntity<>(skill, HttpStatus.OK);
     }
 }
+
