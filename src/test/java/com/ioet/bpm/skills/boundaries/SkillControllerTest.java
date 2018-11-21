@@ -12,6 +12,8 @@ import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
+import java.util.List;
+
 @RunWith(MockitoJUnitRunner.class)
 public class SkillControllerTest {
 
@@ -42,4 +44,18 @@ public class SkillControllerTest {
         Assert.assertEquals(HttpStatus.CREATED, skillCreatedResponse.getStatusCode());
         Mockito.verify(skillRepository, Mockito.times(1)).save(skillToCreate);
     }
+
+    @Test
+    public void skillsFoundByNameCoincidences()throws Exception {
+        Skill skill=Mockito.mock(Skill.class);
+        String skillName=skill.getName();
+        List<Skill> foundNameCoincidences=Mockito.mock(List.class);
+        Mockito.when(skillRepository.findByNameContaining(skillName)).thenReturn(foundNameCoincidences);
+
+        ResponseEntity<List> nameCoincidencesList = skillController.getName(skillName);
+
+        Assert.assertEquals(HttpStatus.OK, nameCoincidencesList.getStatusCode());
+        Mockito.verify(skillRepository,Mockito.times(1)).findByNameContaining(skillName);
+    }
 }
+

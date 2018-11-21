@@ -9,3 +9,4 @@ import java.util.List;
 public interface SkillRepository extends CrudRepository<Skill, String> {
     List<Skill> findByNameContaining (String name);
 }
+

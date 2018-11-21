@@ -95,3 +95,4 @@ public class SkillController {
         return new ResponseEntity<>(skill, HttpStatus.OK);
     }
 }
+
