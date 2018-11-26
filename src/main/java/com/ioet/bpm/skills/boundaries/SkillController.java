@@ -1,6 +1,8 @@
 package com.ioet.bpm.skills.boundaries;
 
+import com.ioet.bpm.skills.domain.Category;
 import com.ioet.bpm.skills.domain.Skill;
+import com.ioet.bpm.skills.repositories.CategoryRepository;
 import com.ioet.bpm.skills.repositories.SkillRepository;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -18,9 +20,11 @@ import java.util.Optional;
 public class SkillController {
 
     private final SkillRepository skillRepository;
+    private final CategoryRepository categoryRepository;
 
-    public SkillController(SkillRepository skillRepository) {
+    public SkillController(SkillRepository skillRepository, CategoryRepository categoryRepository) {
         this.skillRepository = skillRepository;
+        this.categoryRepository = categoryRepository;
     }
 
     @ApiOperation(value = "Return a list of all skills", response = Skill.class, responseContainer = "List")
@@ -45,16 +49,20 @@ public class SkillController {
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
-    @RequestMapping(value = "", method = RequestMethod.GET,params = "skillName")
-    public ResponseEntity<List>getName(String skillName){
+    @RequestMapping(value = "", method = RequestMethod.GET, params = "skillName")
+    public ResponseEntity<List> getName(String skillName) {
         List<Skill> skillWithNameCoincidences = skillRepository.findByNameContaining(skillName);
-        return  new ResponseEntity<>(skillWithNameCoincidences,HttpStatus.OK);
+        return new ResponseEntity<>(skillWithNameCoincidences, HttpStatus.OK);
     }
 
     @PostMapping
-    public ResponseEntity<Skill> createSkill(@RequestBody Skill skill) {
-        Skill skillCreated = skillRepository.save(skill);
-        return new ResponseEntity<>(skillCreated, HttpStatus.CREATED);
+    @ApiOperation(value = "Create a skill")
+    public ResponseEntity<?> createSkill(@RequestBody Skill skill) {
+        if(categoryRepository.findById(skill.getCategoryId()).isPresent()){
+            Skill skillCreated = skillRepository.save(skill);
+            return new ResponseEntity<>(skillCreated, HttpStatus.CREATED);
+        }
+        return new ResponseEntity<>( "categoryId not found", HttpStatus.UNPROCESSABLE_ENTITY);
     }
 
     @ApiOperation(value = "Delete a skill")
@@ -66,12 +74,11 @@ public class SkillController {
     @DeleteMapping(path = "/{id}", produces = "application/json")
     public ResponseEntity<?> deleteSkill(@PathVariable(value = "id") String skillId) {
         Optional<Skill> skill = skillRepository.findById(skillId);
-        if (!skill.isPresent()) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        if (skill.isPresent()) {
+            skillRepository.delete(skill.get());
+            return new ResponseEntity<>(HttpStatus.OK);
         }
-
-        skillRepository.delete(skill.get());
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
     @ApiOperation(value = "Update a skill", response = Skill.class)
@@ -80,19 +87,18 @@ public class SkillController {
             @ApiResponse(code = 404, message = "The skill to update was not found")
     })
     @PutMapping(path = "/{id}", produces = "application/json")
-    public ResponseEntity<Skill> updateSkill(@PathVariable(value = "id") String skillId,
+    public ResponseEntity<?> updateSkill(@PathVariable(value = "id") String id,
                                              @Valid @RequestBody Skill skillDetails) {
-
-        Optional<Skill> skillOptional = skillRepository.findById(skillId);
-        if (!skillOptional.isPresent()) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        Optional<Skill> skillOptional = skillRepository.findById(id);
+        if (skillOptional.isPresent()) {
+            Optional<Category> categoryOptional = categoryRepository.findById(skillDetails.getCategoryId());
+            if (categoryOptional.isPresent()) {
+                skillDetails.setId(skillOptional.get().getId());
+                skillRepository.save(skillDetails);
+                return new ResponseEntity<>(skillDetails, HttpStatus.OK);
+            }
+            return new ResponseEntity<>( "categoryId not found", HttpStatus.UNPROCESSABLE_ENTITY);
         }
-
-        Skill skill = skillOptional.get();
-        skill.setName(skillDetails.getName());
-        skill.setDescription(skillDetails.getDescription());
-        skillRepository.save(skill);
-        return new ResponseEntity<>(skill, HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 }
-
