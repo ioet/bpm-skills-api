@@ -13,7 +13,7 @@ import javax.validation.Valid;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/categories")
+@RequestMapping("/skills-categories")
 public class CategoryController {
 
     private final CategoryRepository categoryRepository;

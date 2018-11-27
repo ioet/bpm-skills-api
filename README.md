@@ -16,5 +16,8 @@ The project has integrated a docker plugin so you can generate a docker image us
 $ ./gradlew build docker
 ```
 
-Don't forget to pass the `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY` to make it work locally.
+##Developer
+
+Don't forget to pass the `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY` and `AWS_REGION` to make it work locally.
 For any other environment the credentials should be provided by the CI server.
+

@@ -6,5 +6,5 @@ import org.springframework.data.repository.CrudRepository;
 
 @EnableScan
 public interface CategoryRepository extends CrudRepository<Category, String> {
-
 }
+
