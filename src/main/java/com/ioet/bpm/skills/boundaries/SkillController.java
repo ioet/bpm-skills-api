@@ -94,12 +94,12 @@ public class SkillController {
                                              @Valid @RequestBody Skill skillToUpdate) {
 
         Optional<Skill> skillFound = skillRepository.findById(skillId);
-        if (!skillFound.isPresent()) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
 
-        skillToUpdate.setId(skillFound.get().getId());
-        Skill updatedSkill = skillRepository.save(skillToUpdate);
-        return new ResponseEntity<>(updatedSkill, HttpStatus.OK);
+        if (skillFound.isPresent()) {
+            skillToUpdate.setId(skillFound.get().getId());
+            Skill updatedSkill = skillRepository.save(skillToUpdate);
+            return new ResponseEntity<>(updatedSkill, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 }
