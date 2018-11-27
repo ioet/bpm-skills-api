@@ -88,18 +88,15 @@ public class SkillController {
     })
     @PutMapping(path = "/{id}", produces = "application/json")
     public ResponseEntity<?> updateSkill(@PathVariable(value = "id") String skillId,
-                                             @Valid @RequestBody Skill skillDetails) {
+                                             @Valid @RequestBody Skill skillToUpdate) {
 
-        Optional<Skill> skillOptional = skillRepository.findById(skillId);
-        if (!skillOptional.isPresent()) {
+        Optional<Skill> skillFound = skillRepository.findById(skillId);
+        if (!skillFound.isPresent()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
-        Skill skill = skillOptional.get();
-        skill.setName(skillDetails.getName());
-        skill.setBusinessValue(skillDetails.getBusinessValue());
-        skill.setPredictiveValue(skillDetails.getPredictiveValue());
-        skillRepository.save(skill);
-        return new ResponseEntity<>(skill, HttpStatus.OK);
+        skillToUpdate.setId(skillFound.get().getId());
+        Skill updatedSkill = skillRepository.save(skillToUpdate);
+        return new ResponseEntity<>(updatedSkill, HttpStatus.OK);
     }
 }
