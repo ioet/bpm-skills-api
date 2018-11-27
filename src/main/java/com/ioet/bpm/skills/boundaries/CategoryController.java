@@ -65,7 +65,7 @@ public class CategoryController {
         Optional<Category> category = categoryRepository.findById(categoryId);
         if (category.isPresent()) {
             categoryRepository.delete(category.get());
-            return new ResponseEntity<>(HttpStatus.OK);
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }  else  {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
