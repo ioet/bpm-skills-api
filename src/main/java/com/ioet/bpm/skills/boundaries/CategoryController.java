@@ -54,7 +54,6 @@ public class CategoryController {
         return new ResponseEntity<>(categoryCreated, HttpStatus.CREATED);
     }
 
-
     @ApiOperation(value = "Delete a category")
     @ApiResponses(value = {
             @ApiResponse(code = 204, message = "Category successfully deleted"),
