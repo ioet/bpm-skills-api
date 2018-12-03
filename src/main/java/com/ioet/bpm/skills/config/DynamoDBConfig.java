@@ -9,6 +9,7 @@ import com.amazonaws.services.dynamodbv2.model.CreateTableRequest;
 import com.amazonaws.services.dynamodbv2.model.ListTablesResult;
 import com.amazonaws.services.dynamodbv2.model.ProvisionedThroughput;
 import com.amazonaws.services.dynamodbv2.util.TableUtils;
+import com.ioet.bpm.skills.domain.Category;
 import com.ioet.bpm.skills.domain.Skill;
 import lombok.extern.slf4j.Slf4j;
 import org.socialsignin.spring.data.dynamodb.repository.config.EnableDynamoDBRepositories;
@@ -46,6 +47,7 @@ public class DynamoDBConfig {
             // Alternatively, you can scan your model package for the DynamoDBTable annotation
             List<Class> modelClasses = new ArrayList<>();
             modelClasses.add(Skill.class);
+            modelClasses.add(Category.class);
 
             for (Class cls : modelClasses) {
                 log.info("Creating DynamoDB table for " + cls.getSimpleName());

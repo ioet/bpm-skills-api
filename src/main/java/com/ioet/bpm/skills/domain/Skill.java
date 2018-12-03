@@ -4,7 +4,6 @@ import com.amazonaws.services.dynamodbv2.datamodeling.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
-
 import javax.validation.constraints.NotBlank;
 
 @NoArgsConstructor
@@ -31,5 +30,5 @@ public class Skill {
 
     @DynamoDBAttribute
     private String categoryId;
-
 }
+

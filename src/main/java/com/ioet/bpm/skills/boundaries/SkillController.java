@@ -55,8 +55,11 @@ public class SkillController {
         return new ResponseEntity<>(skillWithNameCoincidences, HttpStatus.OK);
     }
 
-    @PostMapping
-    @ApiOperation(value = "Create a skill")
+    @ApiOperation(value = "Create a new skill", response = Skill.class)
+    @ApiResponses(value = {
+            @ApiResponse(code = 201, message = "Skill successfully created")
+    })
+    @PostMapping(produces = "application/json")
     public ResponseEntity<?> createSkill(@RequestBody Skill skill) {
         if(categoryRepository.findById(skill.getCategoryId()).isPresent()){
             Skill skillCreated = skillRepository.save(skill);
@@ -87,17 +90,15 @@ public class SkillController {
             @ApiResponse(code = 404, message = "The skill to update was not found")
     })
     @PutMapping(path = "/{id}", produces = "application/json")
-    public ResponseEntity<?> updateSkill(@PathVariable(value = "id") String id,
-                                             @Valid @RequestBody Skill skillDetails) {
-        Optional<Skill> skillOptional = skillRepository.findById(id);
-        if (skillOptional.isPresent()) {
-            Optional<Category> categoryOptional = categoryRepository.findById(skillDetails.getCategoryId());
-            if (categoryOptional.isPresent()) {
-                skillDetails.setId(skillOptional.get().getId());
-                skillRepository.save(skillDetails);
-                return new ResponseEntity<>(skillDetails, HttpStatus.OK);
-            }
-            return new ResponseEntity<>( "categoryId not found", HttpStatus.UNPROCESSABLE_ENTITY);
+    public ResponseEntity<?> updateSkill(@PathVariable(value = "id") String skillId,
+                                             @Valid @RequestBody Skill skillToUpdate) {
+
+        Optional<Skill> skillFound = skillRepository.findById(skillId);
+
+        if (skillFound.isPresent()) {
+            skillToUpdate.setId(skillFound.get().getId());
+            Skill updatedSkill = skillRepository.save(skillToUpdate);
+            return new ResponseEntity<>(updatedSkill, HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
