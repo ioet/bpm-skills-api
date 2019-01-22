@@ -15,7 +15,7 @@ import java.io.OutputStream;
 public class AwsLambdaHandler implements RequestStreamHandler {
 
 
-    public final SpringBootLambdaContainerHandler<AwsProxyRequest, AwsProxyResponse> handler;
+    private final SpringBootLambdaContainerHandler<AwsProxyRequest, AwsProxyResponse> handler;
 
     public AwsLambdaHandler() throws ContainerInitializationException {
         handler = SpringBootLambdaContainerHandler.getAwsProxyHandler(BpmSkillsApiApplication.class);
