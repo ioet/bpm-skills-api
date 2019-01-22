@@ -7,7 +7,7 @@
 
 ## Run it locally
 
-First run this to start eureka and edge server. Make sure you have an AWS account and you have exported your credentials in the environment:
+Set up your own credentials to be able to connect to dependent AWS services:
 
 ```
 export AWS_ACCESS_KEY_ID="YOUR_ACCESS_KEY"
@@ -15,33 +15,17 @@ export AWS_SECRET_ACCESS_KEY="YOUR_SECRET_KEY"
 export AWS_REGION="us-east-1"
 ```
 
-Then you will be able to pull the docker images using the following command:
 
-```
-docker-compose up
-```
 Then start the skills-api using your IDE or this command
 ```
 ./gradlew bootRun
 ```
 
-You will be able to see the skills-api service registered in eureka here:
-```
-http://localhost:8761/
-```
 
 And you can access the skills-api and it's swagger here: 
 ```
-http://localhost:9081/skills-service/skills
-http://localhost:9081/skills-service/swagger-ui.html#/
-```
-
-## Swagger
-
-Swagger is integrated and available in this URL:
-
-```
-http://IP_ADDRESS:PORT/swagger-ui.html
+http://localhost:8082/skills
+http://localhost:8082/swagger-ui.html
 ```
 
 ## Postman
@@ -58,45 +42,20 @@ You can run it with newman with this command:
 newman run postman/collection.json -e postman/env.json
 ```
 
-## Docker
-
-The project has integrated a docker plugin so you can generate a docker image using the following Gradle task:
-
-```
-$ ./gradlew build docker
-```
-
-Don't forget to pass the `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY` to make it work locally.
-For any other environment the credentials should be provided by the CI server.
-
-
-
-## Dynamo
-
-In order to make the API works and establish a connection with Dynamo (Cloud DB provided by AWS) you'll need to export the following environment variables:
-
-```
-export AWS_ACCESS_KEY_ID="YOUR_ACCESS_KEY"
-export AWS_SECRET_ACCESS_KEY="YOUR_SECRET_KEY"
-export AWS_REGION="us-east-1"
-```
-
-If you don't have AWS Credentials, feel free to ask Juan Garcia, Roland or Rene Enriquez for it. Your account needs to be part of the group bpm-people to have enough permission to access Dynamo tables which are part of this project. 
-
 ## Playing with the API
 So far you can create, query and delete people using the API. 
 
 Query skills
 
 ```
-curl -X GET http://localhost:9081/skills-service/skills
+curl -X GET http://localhost:8082/skills
 ```
 
 
 Create a new skill
 
 ```
-curl -X POST http://localhost:9081/skills-service/skills -H 'Content-Type: application/json' -d '{ "businessValue": 0, "categoryId": "1a2b3c", "id": "4d5e6f", "label": "Category Label", "name": "Category Name", "predictiveValue": 0}'
+curl -X POST http://localhost:8082/skills -H 'Content-Type: application/json' -d '{ "businessValue": 0, "categoryId": "1a2b3c", "id": "4d5e6f", "label": "Category Label", "name": "Category Name", "predictiveValue": 0}'
 ```
 
 ## Configuring IntelliJ IDE
@@ -110,18 +69,36 @@ Setting the environment variables
 3. Add the required environment variables AWS_SECRET_ACCESS_KEY, AWS_ACCESS_KEY_ID, and AWS_REGION with the correspondent values.
 ```
 
-Run or Debug
+## Run or Debug
 
-```
 Now, you can run or debug the app from IntelliJ, you can use JRbel to debug and redeploy the app.
+
+
+## Deploying as Lambda
+
+### Create a S3 bucket
+```
+aws s3 mb s3://cf-template-spring-boot-apps-as-lambda
 ```
 
-
-
-aws s3 mb s3://cf-template-spring-boot-apps-as-lambda
-
+### Package the CouldFormation template
+```
 aws cloudformation package --template-file sam-skills-api.yml --output-template-file build/distributions/output-sam-skills-api.yml --s3-bucket cf-template-spring-boot-apps-as-lambda --s3-prefix skills-api
+```
 
+### Deploy the code as lambda
+
+- Generate the artifact containing the code
+```
+./gradlew buildZip
+```
+
+- Deploy the code to AWS
+```
 aws cloudformation deploy --template-file output-sam-skills-api.yml --stack-name spring-boot-lambda --capabilities CAPABILITY_IAM
+```
 
+- Get the URL
+```
 aws cloudformation describe-stacks --stack-name spring-boot-lambda
+```
