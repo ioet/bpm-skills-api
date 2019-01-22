@@ -81,6 +81,11 @@ Now, you can run or debug the app from IntelliJ, you can use JRbel to debug and 
 aws s3 mb s3://cf-template-spring-boot-apps-as-lambda
 ```
 
+### Generate the bundle
+```
+./gradlew buildZip
+```
+
 ### Package the CouldFormation template
 ```
 aws cloudformation package --template-file sam-skills-api.yml --output-template-file output-sam-skills-api.yml --s3-bucket cf-template-spring-boot-apps-as-lambda --s3-prefix skills-api
@@ -88,10 +93,6 @@ aws cloudformation package --template-file sam-skills-api.yml --output-template-
 
 ### Deploy the code as lambda
 
-- Generate the artifact containing the code
-```
-./gradlew buildZip
-```
 
 - Deploy the code to AWS
 ```
