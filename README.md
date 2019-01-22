@@ -116,3 +116,12 @@ Run or Debug
 Now, you can run or debug the app from IntelliJ, you can use JRbel to debug and redeploy the app.
 ```
 
+
+
+aws s3 mb s3://cf-template-spring-boot-apps-as-lambda
+
+aws cloudformation package --template-file sam-skills-api.yml --output-template-file build/distributions/output-sam-skills-api.yml --s3-bucket cf-template-spring-boot-apps-as-lambda --s3-prefix skills-api
+
+aws cloudformation deploy --template-file output-sam-skills-api.yml --stack-name spring-boot-lambda --capabilities CAPABILITY_IAM
+
+aws cloudformation describe-stacks --stack-name spring-boot-lambda

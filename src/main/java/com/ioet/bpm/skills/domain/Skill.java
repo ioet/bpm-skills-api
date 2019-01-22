@@ -1,13 +1,17 @@
 package com.ioet.bpm.skills.domain;
 
 import com.amazonaws.services.dynamodbv2.datamodeling.*;
+import com.fasterxml.jackson.databind.PropertyNamingStrategy;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
+
 import javax.validation.constraints.NotBlank;
 
 @NoArgsConstructor
 @Data
+@JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
 @DynamoDBTable(tableName = "skills_skill")
 public class Skill {
 
