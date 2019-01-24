@@ -96,10 +96,10 @@ aws cloudformation package --template-file sam-skills-api.yml --output-template-
 
 - Deploy the code to AWS
 ```
-aws cloudformation deploy --template-file output-sam-skills-api.yml --stack-name spring-boot-lambda --capabilities CAPABILITY_IAM
+aws cloudformation deploy --template-file output-sam-skills-api.yml --stack-name bpm-skills-api --capabilities CAPABILITY_IAM
 ```
 
 - Get the URL
 ```
-aws cloudformation describe-stacks --stack-name spring-boot-lambda
+aws cloudformation describe-stacks --stack-name bpm-skills-api
 ```

@@ -10,7 +10,7 @@ Outputs:
 Resources:
   SkillsApiLambda:
     Properties:
-      CodeUri: s3://cf-template-spring-boot-apps-as-lambda/skills-api/577241c049ec4dd357fa91a4779a691c
+      CodeUri: s3://cf-template-spring-boot-apps-as-lambda/skills-api/22f93c44d3d485d7225d03eb36b1ed68
       Events:
         GetResource:
           Properties:
