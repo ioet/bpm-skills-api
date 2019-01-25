@@ -2,8 +2,6 @@ sudo: required
 language: java
 jdk:
 - oraclejdk8
-services:
-- docker
 before_cache:
 - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
 - rm -fr $HOME/.gradle/caches/*/plugin-resolution/
@@ -14,10 +12,3 @@ cache:
 after_success:
 - bash <(curl -s https://codecov.io/bash)
 - pip install --user awscli
-- eval $(aws ecr get-login --no-include-email --region us-east-1)
-- docker build -t bpm-skills-api:$TRAVIS_BUILD_ID . --build-arg JAR_FILE=build/libs/bpm-skills-api-0.0.1.jar
-- docker tag bpm-skills-api:$TRAVIS_BUILD_ID 524819651720.dkr.ecr.us-east-1.amazonaws.com/bpm-skills-api:$TRAVIS_BUILD_ID
-- docker push 524819651720.dkr.ecr.us-east-1.amazonaws.com/bpm-skills-api:$TRAVIS_BUILD_ID
-- docker build -t bpm-skills-api . --build-arg JAR_FILE=build/libs/bpm-skills-api-0.0.1.jar
-- docker tag bpm-skills-api:latest 524819651720.dkr.ecr.us-east-1.amazonaws.com/bpm-skills-api:latest
-- docker push 524819651720.dkr.ecr.us-east-1.amazonaws.com/bpm-skills-api:latest
