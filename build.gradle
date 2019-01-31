@@ -60,7 +60,7 @@ jacocoTestReport {
     }
     afterEvaluate {
         classDirectories = files(classDirectories.files.collect {
-            fileTree(dir: it, exclude: ['**/config/**', '**/BpmSkillsApiApplication.class', '**/aws/**'])
+            fileTree(dir: it, exclude: ['**/config/**', '**/domain/**', '**/BpmSkillsApiApplication.class', '**/aws/**'])
         })
     }
 }
