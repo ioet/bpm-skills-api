@@ -1,6 +1,5 @@
 package com.ioet.bpm.skills.boundaries;
 
-import com.ioet.bpm.skills.domain.Category;
 import com.ioet.bpm.skills.domain.Skill;
 import com.ioet.bpm.skills.repositories.CategoryRepository;
 import com.ioet.bpm.skills.repositories.SkillRepository;
@@ -60,12 +59,12 @@ public class SkillController {
             @ApiResponse(code = 201, message = "Skill successfully created")
     })
     @PostMapping(produces = "application/json")
-    public ResponseEntity<?> createSkill(@RequestBody Skill skill) {
-        if(categoryRepository.findById(skill.getCategoryId()).isPresent()){
+    public ResponseEntity<?> createSkill(@Valid @RequestBody Skill skill) {
+        if (categoryRepository.findById(skill.getCategoryId()).isPresent()) {
             Skill skillCreated = skillRepository.save(skill);
             return new ResponseEntity<>(skillCreated, HttpStatus.CREATED);
         }
-        return new ResponseEntity<>( "categoryId not found", HttpStatus.UNPROCESSABLE_ENTITY);
+        return new ResponseEntity<>("categoryId not found", HttpStatus.UNPROCESSABLE_ENTITY);
     }
 
     @ApiOperation(value = "Delete a skill")
@@ -91,7 +90,7 @@ public class SkillController {
     })
     @PutMapping(path = "/{id}", produces = "application/json")
     public ResponseEntity<?> updateSkill(@PathVariable(value = "id") String skillId,
-                                             @Valid @RequestBody Skill skillToUpdate) {
+                                         @Valid @RequestBody Skill skillToUpdate) {
 
         Optional<Skill> skillFound = skillRepository.findById(skillId);
 
