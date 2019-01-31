@@ -8,7 +8,4 @@ import org.springframework.data.repository.CrudRepository;
 public interface SkillPersonRepository extends CrudRepository<SkillPerson, String> {
 
     Iterable<SkillPerson> findAllBySkillId(String skillId);
-
-    Iterable<SkillPerson> findAllByPersonId(String PersonId);
-
 }

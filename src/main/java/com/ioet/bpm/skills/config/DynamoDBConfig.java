@@ -10,6 +10,7 @@ import com.amazonaws.services.dynamodbv2.model.ListTablesResult;
 import com.amazonaws.services.dynamodbv2.model.ProvisionedThroughput;
 import com.amazonaws.services.dynamodbv2.util.TableUtils;
 import com.ioet.bpm.skills.domain.Category;
+import com.ioet.bpm.skills.domain.PersonSkill;
 import com.ioet.bpm.skills.domain.Skill;
 import com.ioet.bpm.skills.domain.SkillPerson;
 import lombok.extern.slf4j.Slf4j;
@@ -50,6 +51,7 @@ public class DynamoDBConfig {
             modelClasses.add(Skill.class);
             modelClasses.add(Category.class);
             modelClasses.add(SkillPerson.class);
+            modelClasses.add(PersonSkill.class);
 
             for (Class cls : modelClasses) {
                 log.info("Creating DynamoDB table for " + cls.getSimpleName());
