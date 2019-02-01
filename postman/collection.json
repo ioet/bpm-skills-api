@@ -1,0 +1,577 @@
+{
+	"info": {
+		"_postman_id": "4d5c21e1-58e7-426b-8e27-cddf1d15933a",
+		"name": "BPM-Skills-API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "categories",
+			"item": [
+				{
+					"name": "Create a skill category",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "56aea853-5364-4774-804c-e724af257629",
+								"exec": [
+									"var service_url = pm.environment.get(\"BPM_PEOPLE_TIME_URL\");",
+									"var url = service_url || \"https://yucrxqd520.execute-api.us-east-1.amazonaws.com/Stage\";",
+									"pm.globals.set(\"url\", url);",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "b04eac34-89d4-4961-8c22-200edc26ba22",
+								"exec": [
+									"pm.test(\"Status code is 201\", function () {",
+									"    pm.response.to.have.status(201);",
+									"});",
+									"",
+									"pm.test(\"The created category is returned\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.name).to.eql(\"testing-skill-ftw\");",
+									"    pm.expect(jsonData.business_value).to.eql(1111);",
+									"    pm.expect(jsonData.predictive_value).to.eql(1112);",
+									"});",
+									"",
+									"pm.globals.set(\"created-category-id\", pm.response.json().id);",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"business_value\": 1111,\n  \"name\": \"testing-skill-ftw\",\n  \"predictive_value\": 1112\n}"
+						},
+						"url": {
+							"raw": "{{url}}/skills-categories",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"skills-categories"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update a skill category",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "7a92beaf-e570-43f4-aa4f-1a80c90d2fd3",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"The updated category is returned\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.name).to.eql(\"testing-skill-ftw\");",
+									"    pm.expect(jsonData.business_value).to.eql(2222);",
+									"    pm.expect(jsonData.predictive_value).to.eql(2223);",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"business_value\": 2222,\n  \"name\": \"testing-skill-ftw\",\n  \"predictive_value\": 2223\n}"
+						},
+						"url": {
+							"raw": "{{url}}/skills-categories/{{created-category-id}}",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"skills-categories",
+								"{{created-category-id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get the created skill category",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "37c0f1a0-9e19-4256-91eb-7770b6a3e59c",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"The requested category is returned\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.name).to.eql(\"testing-skill-ftw\");",
+									"    pm.expect(jsonData.business_value).to.eql(2222);",
+									"    pm.expect(jsonData.predictive_value).to.eql(2223);",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{url}}/skills-categories/{{created-category-id}}",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"skills-categories",
+								"{{created-category-id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get all skill categories",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "37c0f1a0-9e19-4256-91eb-7770b6a3e59c",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"At least one skill is returned\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.length).to.be.above(0);",
+									"});",
+									"",
+									"postman.setNextRequest(\"Create a new skill\");",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{url}}/skills-categories",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"skills-categories"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete a skill category",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "3b0f6588-3121-4890-93a8-217dd71990a4",
+								"exec": [
+									"pm.test(\"Status code is 204\", function () {",
+									"    pm.response.to.have.status(204);",
+									"});",
+									"",
+									"postman.setNextRequest(null);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{url}}/skills-categories/{{created-category-id}}",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"skills-categories",
+								"{{created-category-id}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "skills",
+			"item": [
+				{
+					"name": "Create a new skill",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "0de8d3e0-1cf0-48f7-953d-6a0c6dcec985",
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "90f51de1-9042-4d09-b27d-6de11b242213",
+								"exec": [
+									"pm.test(\"Status code is 201\", function () {",
+									"    pm.response.to.have.status(201);",
+									"});",
+									"",
+									"pm.test(\"The created skill is returned\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.name).to.eql(\"Postman testing\");",
+									"    pm.expect(jsonData.label).to.eql(\"Some label\");",
+									"    pm.expect(jsonData.business_value).to.eql(3333);",
+									"    pm.expect(jsonData.predictive_value).to.eql(4444);",
+									"    pm.expect(jsonData.category_id).to.eql(pm.globals.get(\"created-category-id\"));",
+									"});",
+									"",
+									"pm.globals.set(\"created-skill-id\", pm.response.json().id);",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"business_value\": 3333,\n  \"category_id\": \"{{created-category-id}}\",\n  \"label\": \"Some label\",\n  \"name\": \"Postman testing\",\n  \"predictive_value\": 4444\n}"
+						},
+						"url": {
+							"raw": "{{url}}/skills",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"skills"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update a skill",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "d8d8c25a-05c6-4bf8-8837-ae321799c193",
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "19a1b3a1-5ce1-4575-b624-b8bad9a15c59",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"The updated skill is returned\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.name).to.eql(\"Postman testing\");",
+									"    pm.expect(jsonData.label).to.eql(\"Some label\");",
+									"    pm.expect(jsonData.business_value).to.eql(3344);",
+									"    pm.expect(jsonData.predictive_value).to.eql(4455);",
+									"    pm.expect(jsonData.category_id).to.eql(pm.globals.get(\"created-category-id\"));",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"business_value\": 3344,\n  \"category_id\": \"{{created-category-id}}\",\n  \"label\": \"Some label\",\n  \"name\": \"Postman testing\",\n  \"predictive_value\": 4455\n}"
+						},
+						"url": {
+							"raw": "{{url}}/skills/{{created-skill-id}}",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"skills",
+								"{{created-skill-id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get one skill",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "d8d8c25a-05c6-4bf8-8837-ae321799c193",
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "c2361fd6-78f7-4574-a1d7-e34bb276a733",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"The requested skill is returned\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.name).to.eql(\"Postman testing\");",
+									"    pm.expect(jsonData.label).to.eql(\"Some label\");",
+									"    pm.expect(jsonData.business_value).to.eql(3344);",
+									"    pm.expect(jsonData.predictive_value).to.eql(4455);",
+									"    pm.expect(jsonData.category_id).to.eql(pm.globals.get(\"created-category-id\"));",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{url}}/skills/{{created-skill-id}}",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"skills",
+								"{{created-skill-id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get all skills",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "d5cd46d7-abd1-4e16-a6af-91c97d32d171",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"At least one skill is returned\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.length).to.be.above(0);",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{url}}/skills",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"skills"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete a skill",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "a32a04bb-193f-4da0-996b-cb1aabe987c5",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "3435ded5-a2a3-4fd5-98c9-c8e8e95eac30",
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {},
+						"url": {
+							"raw": "{{url}}/skills/{{created-skill-id}}",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"skills",
+								"{{created-skill-id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get one skill after delete",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "d8d8c25a-05c6-4bf8-8837-ae321799c193",
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "c2361fd6-78f7-4574-a1d7-e34bb276a733",
+								"exec": [
+									"pm.test(\"Status code is 404\", function () {",
+									"    pm.response.to.have.status(404);",
+									"});",
+									"",
+									"postman.setNextRequest(\"Delete a skill category\");",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{url}}/skills/{{created-skill-id}}",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"skills",
+								"{{created-skill-id}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

@@ -29,17 +29,20 @@ http://localhost:8082/swagger-ui.html
 ```
 
 ## Postman
-There is a Postman Collection included to test the api.
-
+There is a Postman Collection included to test the api.  
 Install Newman in your machine
-
 ```
 $ npm install -g newman
 ```
-  
-You can run it with newman with this command:
+
+### Running locally
 ```
 newman run postman/collection.json -e postman/env.json
+```
+
+### Running against AWS
+```
+newman run postman/collection.json -e postman/aws-env.json
 ```
 
 ## Playing with the API

@@ -73,12 +73,12 @@ public class SkillController {
             @ApiResponse(code = 201, message = "Skill successfully created")
     })
     @PostMapping(produces = "application/json")
-    public ResponseEntity<?> createSkill(@RequestBody Skill skill) {
+    public ResponseEntity<?> createSkill(@Valid @RequestBody Skill skill) {
         if (categoryRepository.findById(skill.getCategoryId()).isPresent()) {
             Skill skillCreated = skillRepository.save(skill);
             return new ResponseEntity<>(skillCreated, HttpStatus.CREATED);
         }
-        return new ResponseEntity<>("categoryId not found", HttpStatus.UNPROCESSABLE_ENTITY);
+        return new ResponseEntity<>( "categoryId not found", HttpStatus.UNPROCESSABLE_ENTITY);
     }
 
     @ApiOperation(value = "Delete a skill")
