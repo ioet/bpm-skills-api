@@ -9,5 +9,9 @@ cache:
   directories:
   - $HOME/.gradle/caches/
   - $HOME/.gradle/wrapper/
+jobs:
+  include:
+    - stage: build
+      ./gradlew build
 after_success:
 - bash <(curl -s https://codecov.io/bash)

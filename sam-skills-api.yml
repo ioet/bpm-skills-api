@@ -2,8 +2,16 @@ AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
 Description: BpmSkills
 
-Resources:
+Parameters:
+  SkillsApiEnvironment:
+    Type: String
+    Default: SkillsApi
+    AllowedValues:
+      - SkillsApi
+      - SkillsApiTesting
+    Description: Enter SkillsApi or SkillsApiTesting. Default is SkillsApi.
 
+Resources:
   SkillsApiLambda:
     Type: AWS::Serverless::Function
     Properties:
@@ -25,4 +33,4 @@ Outputs:
     Description: URL for application
     Value: !Sub 'https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Stage/skills'
     Export:
-      Name: SkillsApi
+      Name: !Ref SkillsApiEnvironment
