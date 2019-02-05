@@ -12,6 +12,6 @@ cache:
 jobs:
   include:
     - stage: build
-      ./gradlew build
+      script: ./gradlew build
 after_success:
 - bash <(curl -s https://codecov.io/bash)
