@@ -23,14 +23,17 @@ jobs:
         - ./gradlew buildZip
         - aws cloudformation package --template-file sam-skills-api.yml --output-template-file output-sam-skills-api.yml --s3-bucket cf-template-spring-boot-apps-as-lambda --s3-prefix skills-api-testing
         - aws cloudformation deploy --template-file output-sam-skills-api.yml --stack-name bpm-skills-api-testing --capabilities CAPABILITY_IAM --parameter-overrides "SkillsApiEnvironment=SkillsApiTesting"
+        - curl $(aws cloudformation describe-stacks --stack-name bpm-skills-api-testing | jq -r '.Stacks | .[].Outputs | .[].OutputValue')
     - stage: perform-postman-tests
       name: "Perform postman tests"
       script:
         - pip install --user awscli
         - npm install -g newman
-        - service_url=$(aws cloudformation describe-stacks --stack-name bpm-skills-api-testing | jq -r '.Stacks | .[].Outputs | .[].OutputValue')
-        - echo $service_url
+        - BPM_SKILLS_URL=$(aws cloudformation describe-stacks --stack-name bpm-skills-api-testing | jq -r '.Stacks | .[].Outputs | .[].OutputValue')
+        - echo $BPM_SKILLS_URL
         - newman run postman/collection.json
+        - aws s3 rm s3://cf-template-spring-boot-apps-as-lambda/skills-api-testing --recursive
+        - aws cloudformation delete-stack --stack-name bpm-skills-api-testing
 stages:
   - name: build
   - name: deploy-to-test-env
