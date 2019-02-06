@@ -2,8 +2,6 @@ sudo: required
 language: java
 jdk:
   - oraclejdk8
-install:
-  - pip install --user awscli
 before_cache:
   - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
   - rm -fr $HOME/.gradle/caches/*/plugin-resolution/
@@ -14,13 +12,23 @@ cache:
 jobs:
   include:
     - stage: build
-      script: ./gradlew check
-    - stage: deployToTestEnv
       script:
+        - ./gradlew assemble
+        - ./gradlew check
+    - stage: deployToTestEnv
+      name: "Deploy to AWS Lambda"
+      script:
+        - pip install --user awscli
         - ./gradlew buildZip
         - aws cloudformation package --template-file sam-skills-api.yml --output-template-file output-sam-skills-api.yml --s3-bucket cf-template-spring-boot-apps-as-lambda --s3-prefix skills-api-testing
         - aws cloudformation deploy --template-file output-sam-skills-api.yml --stack-name bpm-skills-api-testing --capabilities CAPABILITY_IAM --parameter-overrides "SkillsApiEnvironment=SkillsApiTesting"
         - aws cloudformation describe-stacks --stack-name bpm-skills-api-testing
+    - script:
+        - npm install -g newman
+        - service_url=$(jq -r '.[] | .[] | .name' test.json)
+        - echo $service_url
+        - newman run postman/collection.json
+      name: "Perform Postman tests"
 stages:
   - name: build
   - name: deployToTestEnv
