@@ -23,7 +23,9 @@ jobs:
         - ./gradlew buildZip
         - aws cloudformation package --template-file sam-skills-api.yml --output-template-file output-sam-skills-api.yml --s3-bucket cf-template-spring-boot-apps-as-lambda --s3-prefix skills-api-testing
         - aws cloudformation deploy --template-file output-sam-skills-api.yml --stack-name bpm-skills-api-testing --capabilities CAPABILITY_IAM --parameter-overrides "SkillsApiEnvironment=SkillsApiTesting"
-        - curl $(aws cloudformation describe-stacks --stack-name bpm-skills-api-testing | jq -r '.Stacks | .[].Outputs | .[].OutputValue')
+        - BPM_SKILLS_URL=$(aws cloudformation describe-stacks --stack-name bpm-skills-api-testing | jq -r '.Stacks | .[].Outputs | .[].OutputValue')
+        - echo $BPM_SKILLS_URL
+        - curl "$BPM_SKILLS_URL/skills"
     - stage: perform-postman-tests
       name: "Perform postman tests against Staging"
       script:
@@ -44,6 +46,7 @@ jobs:
         - aws cloudformation deploy --template-file output-sam-skills-api.yml --stack-name bpm-skills-api --capabilities CAPABILITY_IAM
         - BPM_SKILLS_URL=$(aws cloudformation describe-stacks --stack-name bpm-skills-api | jq -r '.Stacks | .[].Outputs | .[].OutputValue')
         - echo $BPM_SKILLS_URL
+        - curl "$BPM_SKILLS_URL/skills"
         - newman run postman/collection.json --global-var "BPM_SKILLS_URL=$BPM_SKILLS_URL"
 stages:
   - name: build
