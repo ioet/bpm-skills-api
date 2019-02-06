@@ -31,7 +31,7 @@ jobs:
         - npm install -g newman
         - BPM_SKILLS_URL=$(aws cloudformation describe-stacks --stack-name bpm-skills-api-testing | jq -r '.Stacks | .[].Outputs | .[].OutputValue')
         - echo $BPM_SKILLS_URL
-        - newman run postman/collection.json
+        - newman run postman/collection.json --global-var "BPM_SKILLS_URL=$BPM_SKILLS_URL"
         - aws s3 rm s3://cf-template-spring-boot-apps-as-lambda/skills-api-testing --recursive
         - aws cloudformation delete-stack --stack-name bpm-skills-api-testing
 stages:

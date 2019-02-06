@@ -16,7 +16,7 @@
 							"script": {
 								"id": "56aea853-5364-4774-804c-e724af257629",
 								"exec": [
-									"var service_url = pm.environment.get(\"BPM_SKILLS_URL\");",
+									"var service_url = pm.globals.get(\"BPM_SKILLS_URL\");",
 									"var url = service_url || \"https://yucrxqd520.execute-api.us-east-1.amazonaws.com/Stage\";",
 									"pm.globals.set(\"url\", url);",
 									""
