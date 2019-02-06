@@ -37,12 +37,12 @@ $ npm install -g newman
 
 ### Running locally
 ```
-newman run postman/collection.json -e postman/env.json
+newman run postman/collection.json --global-var "BPM_SKILLS_URL=http://localhost:8082"
 ```
 
 ### Running against AWS
 ```
-newman run postman/collection.json -e postman/aws-env.json
+newman run postman/collection.json --global-var "BPM_SKILLS_URL=$(aws cloudformation describe-stacks --stack-name bpm-skills-api-testing | jq -r '.Stacks | .[].Outputs | .[].OutputValue')"
 ```
 
 ## Playing with the API

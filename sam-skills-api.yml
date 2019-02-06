@@ -31,6 +31,6 @@ Resources:
 Outputs:
   SkillsApi:
     Description: URL for application
-    Value: !Sub 'https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Stage/skills'
+    Value: !Sub 'https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Stage'
     Export:
       Name: !Ref SkillsApiEnvironment
