@@ -22,9 +22,10 @@ jobs:
         - ./gradlew buildZip
         - aws cloudformation package --template-file sam-skills-api.yml --output-template-file output-sam-skills-api.yml --s3-bucket cf-template-spring-boot-apps-as-lambda --s3-prefix skills-api-testing
         - aws cloudformation deploy --template-file output-sam-skills-api.yml --stack-name bpm-skills-api-testing --capabilities CAPABILITY_IAM --parameter-overrides "SkillsApiEnvironment=SkillsApiTesting"
-        - aws cloudformation describe-stacks --stack-name bpm-skills-api-testing
     - script:
+        - pip install --user awscli
         - npm install -g newman
+        - aws cloudformation describe-stacks --stack-name bpm-skills-api-testing | jq -r '.Stacks | .[].Outputs | .[].OutputValue'
         - service_url=$(jq -r '.[] | .[] | .name' test.json)
         - echo $service_url
         - newman run postman/collection.json
