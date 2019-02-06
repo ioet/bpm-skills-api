@@ -16,8 +16,8 @@ jobs:
       script:
         - ./gradlew assemble
         - ./gradlew check
-    - stage: deploy-to-test-env
-      name: "Deploy to AWS Lambda Test Environment"
+    - stage: deploy-to-staging-env
+      name: "Deploy to AWS Lambda Staging Environment"
       script:
         - pip install --user awscli
         - ./gradlew buildZip
@@ -25,7 +25,7 @@ jobs:
         - aws cloudformation deploy --template-file output-sam-skills-api.yml --stack-name bpm-skills-api-testing --capabilities CAPABILITY_IAM --parameter-overrides "SkillsApiEnvironment=SkillsApiTesting"
         - curl $(aws cloudformation describe-stacks --stack-name bpm-skills-api-testing | jq -r '.Stacks | .[].Outputs | .[].OutputValue')
     - stage: perform-postman-tests
-      name: "Perform postman tests"
+      name: "Perform postman tests against Staging"
       script:
         - pip install --user awscli
         - npm install -g newman
@@ -35,7 +35,7 @@ jobs:
         - aws s3 rm s3://cf-template-spring-boot-apps-as-lambda/skills-api-testing --recursive
         - aws cloudformation delete-stack --stack-name bpm-skills-api-testing
     - stage: deploy-to-prod-env
-      name: "Deploy to AWS Lambda and Postman Test"
+      name: "Deploy to AWS Lambda and Postman Test against Production"
       script:
         - pip install --user awscli
         - npm install -g newman
@@ -47,7 +47,7 @@ jobs:
         - newman run postman/collection.json --global-var "BPM_SKILLS_URL=$BPM_SKILLS_URL"
 stages:
   - name: build
-  - name: deploy-to-test-env
+  - name: deploy-to-staging-env
     if: type = pull_request
   - name: perform-postman-tests
     if: type = pull_request
