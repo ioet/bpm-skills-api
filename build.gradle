@@ -41,6 +41,9 @@ dependencies {
     testCompile('org.springframework.boot:spring-boot-starter-test')
     compile 'io.springfox:springfox-swagger2:2.9.2'
     compile 'io.springfox:springfox-swagger-ui:2.9.2'
+
+    compile group: 'com.squareup.retrofit2', name: 'retrofit', version: '2.4.0'
+    compile group: 'com.squareup.retrofit2', name: 'converter-gson', version: '2.4.0'
     compile 'com.amazonaws:aws-lambda-java-core:1.1.0'
     compile 'com.amazonaws:aws-lambda-java-events:1.1.0'
     compile group: 'com.amazonaws.serverless', name: 'aws-serverless-java-container-core', version: '1.3'
