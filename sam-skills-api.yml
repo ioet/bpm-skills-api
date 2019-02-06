@@ -2,17 +2,25 @@ AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
 Description: BpmSkills
 
-Resources:
+Parameters:
+  SkillsApiEnvironment:
+    Type: String
+    Default: SkillsApi
+    AllowedValues:
+      - SkillsApi
+      - SkillsApiTesting
+    Description: Enter SkillsApi or SkillsApiTesting. Default is SkillsApi.
 
+Resources:
   SkillsApiLambda:
     Type: AWS::Serverless::Function
     Properties:
       Handler: com.ioet.bpm.skills.aws.handler.AwsLambdaHandler::handleRequest
       Runtime: java8
       CodeUri: build/distributions/bpm-skills-api-0.0.1.zip
-      MemorySize: 1512
+      MemorySize: 2048
       Role: arn:aws:iam::524819651720:role/API-lambda-deployment
-      Timeout: 60
+      Timeout: 300
       Events:
         GetResource:
           Type: Api
@@ -23,6 +31,6 @@ Resources:
 Outputs:
   SkillsApi:
     Description: URL for application
-    Value: !Sub 'https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Stage/skills'
+    Value: !Sub 'https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Stage'
     Export:
-      Name: SkillsApi
+      Name: !Ref SkillsApiEnvironment

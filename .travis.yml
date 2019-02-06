@@ -1,13 +1,60 @@
 sudo: required
 language: java
 jdk:
-- oraclejdk8
+  - oraclejdk8
 before_cache:
-- rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
-- rm -fr $HOME/.gradle/caches/*/plugin-resolution/
+  - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
+  - rm -fr $HOME/.gradle/caches/*/plugin-resolution/
 cache:
   directories:
-  - $HOME/.gradle/caches/
-  - $HOME/.gradle/wrapper/
+    - $HOME/.gradle/caches/
+    - $HOME/.gradle/wrapper/
+jobs:
+  include:
+    - stage: build
+      name: "Build project and unit tests"
+      script:
+        - ./gradlew assemble
+        - ./gradlew check
+    - stage: deploy-to-staging-env
+      name: "Deploy to AWS Lambda Staging Environment"
+      script:
+        - pip install --user awscli
+        - ./gradlew buildZip
+        - aws cloudformation package --template-file sam-skills-api.yml --output-template-file output-sam-skills-api.yml --s3-bucket cf-template-spring-boot-apps-as-lambda --s3-prefix skills-api-testing
+        - aws cloudformation deploy --template-file output-sam-skills-api.yml --stack-name bpm-skills-api-testing --capabilities CAPABILITY_IAM --parameter-overrides "SkillsApiEnvironment=SkillsApiTesting"
+        - BPM_SKILLS_URL=$(aws cloudformation describe-stacks --stack-name bpm-skills-api-testing | jq -r '.Stacks | .[].Outputs | .[].OutputValue')
+        - echo $BPM_SKILLS_URL
+        - curl "$BPM_SKILLS_URL/skills"
+    - stage: perform-postman-tests
+      name: "Perform postman tests against Staging"
+      script:
+        - pip install --user awscli
+        - npm install -g newman
+        - BPM_SKILLS_URL=$(aws cloudformation describe-stacks --stack-name bpm-skills-api-testing | jq -r '.Stacks | .[].Outputs | .[].OutputValue')
+        - echo $BPM_SKILLS_URL
+        - newman run postman/collection.json --global-var "BPM_SKILLS_URL=$BPM_SKILLS_URL"
+        - aws s3 rm s3://cf-template-spring-boot-apps-as-lambda/skills-api-testing --recursive
+        - aws cloudformation delete-stack --stack-name bpm-skills-api-testing
+    - stage: deploy-to-prod-env
+      name: "Deploy to AWS Lambda and Postman Test against Production"
+      script:
+        - pip install --user awscli
+        - npm install -g newman
+        - ./gradlew buildZip
+        - aws cloudformation package --template-file sam-skills-api.yml --output-template-file output-sam-skills-api.yml --s3-bucket cf-template-spring-boot-apps-as-lambda --s3-prefix skills-api
+        - aws cloudformation deploy --template-file output-sam-skills-api.yml --stack-name bpm-skills-api --capabilities CAPABILITY_IAM
+        - BPM_SKILLS_URL=$(aws cloudformation describe-stacks --stack-name bpm-skills-api | jq -r '.Stacks | .[].Outputs | .[].OutputValue')
+        - echo $BPM_SKILLS_URL
+        - curl "$BPM_SKILLS_URL/skills"
+        - newman run postman/collection.json --global-var "BPM_SKILLS_URL=$BPM_SKILLS_URL"
+stages:
+  - name: build
+  - name: deploy-to-staging-env
+    if: type = pull_request
+  - name: perform-postman-tests
+    if: type = pull_request
+  - name: deploy-to-prod-env
+    if: branch = master AND type = push
 after_success:
-- bash <(curl -s https://codecov.io/bash)
+  - bash <(curl -s https://codecov.io/bash)
