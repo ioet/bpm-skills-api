@@ -39,7 +39,7 @@ public class DynamoDBConfig {
     }
 
 
-    @Bean
+//    @Bean
     public InitializingBean initializeTables(AmazonDynamoDB amazonDynamoDB) {
         return () -> {
             DynamoDBMapper dynamoDBMapper = new DynamoDBMapper(amazonDynamoDB);
