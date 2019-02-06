@@ -52,6 +52,6 @@ stages:
   - name: perform-postman-tests
     if: type = pull_request
   - name: deploy-to-prod-env
-    if: branch = master
+    if: branch = master AND type = push
 after_success:
   - bash <(curl -s https://codecov.io/bash)
