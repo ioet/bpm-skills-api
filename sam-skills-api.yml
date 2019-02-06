@@ -18,9 +18,9 @@ Resources:
       Handler: com.ioet.bpm.skills.aws.handler.AwsLambdaHandler::handleRequest
       Runtime: java8
       CodeUri: build/distributions/bpm-skills-api-0.0.1.zip
-      MemorySize: 1512
+      MemorySize: 3008
       Role: arn:aws:iam::524819651720:role/API-lambda-deployment
-      Timeout: 60
+      Timeout: 300
       Events:
         GetResource:
           Type: Api
