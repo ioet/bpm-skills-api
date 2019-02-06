@@ -17,7 +17,7 @@ jobs:
         - ./gradlew assemble
         - ./gradlew check
     - stage: deploy-to-test-env
-      name: "Deploy to AWS Lambda"
+      name: "Deploy to AWS Lambda Test Environment"
       script:
         - pip install --user awscli
         - ./gradlew buildZip
@@ -34,11 +34,24 @@ jobs:
         - newman run postman/collection.json --global-var "BPM_SKILLS_URL=$BPM_SKILLS_URL"
         - aws s3 rm s3://cf-template-spring-boot-apps-as-lambda/skills-api-testing --recursive
         - aws cloudformation delete-stack --stack-name bpm-skills-api-testing
+    - stage: deploy-to-prod-env
+      name: "Deploy to AWS Lambda and Postman Test"
+      script:
+        - pip install --user awscli
+        - npm install -g newman
+        - ./gradlew buildZip
+        - aws cloudformation package --template-file sam-skills-api.yml --output-template-file output-sam-skills-api.yml --s3-bucket cf-template-spring-boot-apps-as-lambda --s3-prefix skills-api
+        - aws cloudformation deploy --template-file output-sam-skills-api.yml --stack-name bpm-skills-api --capabilities CAPABILITY_IAM
+        - BPM_SKILLS_URL=$(aws cloudformation describe-stacks --stack-name bpm-skills-api | jq -r '.Stacks | .[].Outputs | .[].OutputValue')
+        - echo $BPM_SKILLS_URL
+        - newman run postman/collection.json --global-var "BPM_SKILLS_URL=$BPM_SKILLS_URL"
 stages:
   - name: build
   - name: deploy-to-test-env
     if: type = pull_request
   - name: perform-postman-tests
     if: type = pull_request
+  - name: deploy-to-prod-env
+    if: branch = master AND
 after_success:
   - bash <(curl -s https://codecov.io/bash)
